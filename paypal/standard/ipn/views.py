@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import re
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
@@ -27,9 +28,13 @@ def ipn(request, item_check_callable=None):
     data = request.POST.copy()
     date_fields = ('time_created', 'payment_date', 'next_payment_date',
                    'subscr_date', 'subscr_effective')
+    data_update = {}
     for date_field in date_fields:
         if data.get(date_field) == 'N/A':
             del data[date_field]
+        elif data.get(date_field):
+            data_update[date_field] = re.sub(r"^(?P<g>\d{2}:\d{2}:\d{2}\s)(\d\s)", r"\g<g>0\2", data[date_field])
+    data.update(data_update)
 
     form = PayPalIPNForm(data)
     if form.is_valid():
