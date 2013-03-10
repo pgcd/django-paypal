@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import re
 from urllib import urlencode
 import urllib2
 from paypal.standard.models import PayPalStandardBase
@@ -17,12 +18,12 @@ class PayPalIPN(PayPalStandardBase):
     def _postback(self):
         """Perform PayPal Postback validation."""
         endpoint = self.get_endpoint()
-        data = "cmd=_notify-validate&%s" % self.query
+        data = "cmd=_notify-validate&%s" % re.sub(r'&cmd(=[^&]*)?(?=&|$)|^cmd(=[^&]*)?(&|$)', '', self.query)
         urllib2.install_opener(urllib2.build_opener(urllib2.HTTPSHandler(debuglevel=1)))
         request = urllib2.Request(endpoint,
                                   data,
                                   headers={
-                                      'Host': "%s:443" % endpoint.replace('https://', '').split('/')[0],
+                                      #'Host': "%s:443" % endpoint.replace('https://', '').split('/')[0],
                                       # 'Host': 'www.paypal.com',
                                       # 'Content-Type': 'application/x-www-form-urlencoded',
                                       # 'Content-Length': len(self.query)

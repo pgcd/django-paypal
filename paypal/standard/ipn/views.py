@@ -23,7 +23,7 @@ def ipn(request, item_check_callable=None):
     #      of if checks just to determine if flag is set.
     flag = None
     ipn_obj = None
-    
+
     # Clean up the data as PayPal sends some weird values such as "N/A"
     data = request.POST.copy()
     date_fields = ('time_created', 'payment_date', 'next_payment_date',
