@@ -15,9 +15,17 @@ class PayPalIPN(PayPalStandardBase):
 
     def _postback(self):
         """Perform PayPal Postback validation."""
-        request = urllib2.Request(self.get_endpoint(),
-                                  headers={'Host': 'www.paypal.com',},
-                                  data="cmd=_notify-validate&%s" % self.query)
+        endpoint = self.get_endpoint()
+        data = "cmd=_notify-validate&%s" % self.query
+        urllib2.install_opener(urllib2.build_opener(urllib2.HTTPSHandler(debuglevel=1)))
+        request = urllib2.Request(endpoint,
+                                  data,
+                                  headers={
+                                      'Host': endpoint.replace('https://', '').split('/')[0],
+                                      'ContentType': 'application/x-www-form-urlencoded',
+                                      'ContentLength': len(data),
+                                  }
+        )
         return urllib2.urlopen(request).read()
     
     def _verify_postback(self):
