@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from urllib import urlencode
 import urllib2
 from paypal.standard.models import PayPalStandardBase
 from paypal.standard.ipn.signals import *
@@ -21,9 +22,10 @@ class PayPalIPN(PayPalStandardBase):
         request = urllib2.Request(endpoint,
                                   data,
                                   headers={
-                                      'Host': endpoint.replace('https://', '').split('/')[0],
-                                      'ContentType': 'application/x-www-form-urlencoded',
-                                      'ContentLength': len(data),
+                                      'Host': "%s:443" % endpoint.replace('https://', '').split('/')[0],
+                                      # 'Host': 'www.paypal.com',
+                                      # 'Content-Type': 'application/x-www-form-urlencoded',
+                                      # 'Content-Length': len(self.query)
                                   }
         )
         return urllib2.urlopen(request).read()
