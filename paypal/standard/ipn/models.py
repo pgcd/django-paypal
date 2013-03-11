@@ -23,7 +23,7 @@ class PayPalIPN(PayPalStandardBase):
         request = urllib2.Request(endpoint,
                                   data,
                                   headers={
-                                      #'Host': "%s:443" % endpoint.replace('https://', '').split('/')[0],
+                                      'Host': "%s:443" % endpoint.replace('https://', '').split('/')[0],
                                       # 'Host': 'www.paypal.com',
                                       # 'Content-Type': 'application/x-www-form-urlencoded',
                                       # 'Content-Length': len(self.query)
